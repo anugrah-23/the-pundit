@@ -1,0 +1,35 @@
+name: Refresh football data
+
+on:
+  schedule:
+    - cron: "17 3 * * 2" # Tuesdays 03:17 UTC, after the weekend and Monday games
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install
+        run: pip install -r requirements-etl.txt
+      - name: Fetch Understat (Top 5, 2026-27)
+        run: python -m etl.fetch_understat --season 2026 --out data/raw
+      - name: Build corpus and embeddings
+        run: python -m etl.build_corpus --raw data/raw --out data/corpus --data-version "$(date -u +%F)"
+      - name: Commit if changed
+        run: |
+          git config user.name "pundit-bot"
+          git config user.email "pundit-bot@users.noreply.github.com"
+          git add data/raw data/corpus
+          git diff --cached --quiet || git commit -m "data: refresh $(date -u +%F)"
+          git push

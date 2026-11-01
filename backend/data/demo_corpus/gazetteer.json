@@ -1,0 +1,106 @@
+{
+ "players": [
+  {
+   "name": "Ibrahim Diallo",
+   "aliases": [
+    "Diallo"
+   ],
+   "team": "Kingsmoor Rovers",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Rafael Silva",
+   "aliases": [
+    "Silva"
+   ],
+   "team": "Northgate City",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Mateo Ruiz",
+   "aliases": [
+    "Ruiz"
+   ],
+   "team": "Harbour Athletic",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Lucas Silva",
+   "aliases": [
+    "Silva"
+   ],
+   "team": "Riverside United",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Kenji Mori",
+   "aliases": [
+    "Mori"
+   ],
+   "team": "Northgate City",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Luca Ferraro",
+   "aliases": [
+    "Ferraro"
+   ],
+   "team": "Kingsmoor Rovers",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Tomas Ekwueme",
+   "aliases": [
+    "Ekwueme"
+   ],
+   "team": "Riverside United",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Arjun Pillai",
+   "aliases": [
+    "Pillai"
+   ],
+   "team": "Northgate City",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Sam Okafor",
+   "aliases": [
+    "Okafor"
+   ],
+   "team": "Harbour Athletic",
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Callum Hart",
+   "aliases": [
+    "Hart"
+   ],
+   "team": "Riverside United",
+   "league": "ENG-Premier League"
+  }
+ ],
+ "teams": [
+  {
+   "name": "Harbour Athletic",
+   "aliases": [],
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Kingsmoor Rovers",
+   "aliases": [],
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Northgate City",
+   "aliases": [],
+   "league": "ENG-Premier League"
+  },
+  {
+   "name": "Riverside United",
+   "aliases": [],
+   "league": "ENG-Premier League"
+  }
+ ]
+}
