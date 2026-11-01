@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .aliases import TEAM_ALIASES
+from .aliases import PLAYER_ALIASES, TEAM_ALIASES
 from .glossary import GLOSSARY
 
 LEAGUE_NAMES = {
@@ -37,17 +37,28 @@ def slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", text).strip("-")
 
 
+def fold_name(text: str) -> str:
+    text = unicodedata.normalize("NFKD", text)
+    return "".join(c for c in text if not unicodedata.combining(c)).lower().strip()
+
+
 def player_aliases(name: str) -> list[str]:
     parts = name.split()
-    aliases = set()
+    aliases = set(PLAYER_ALIASES.get(name, []))
     if len(parts) >= 2:
-        # Surname with particles: "Virgil van Dijk" -> "van Dijk" and "Dijk"? Keep "van Dijk" only.
+        # Surname including particles: "Virgil van Dijk" -> "van Dijk".
         i = len(parts) - 1
         while i > 0 and parts[i - 1].lower() in SURNAME_PARTICLES:
             i -= 1
         surname = " ".join(parts[i:])
         if len(surname) >= 4:
             aliases.add(surname)
+        # Hyphenated surnames: fans say "Mbappe" for "Mbappe-Lottin", "Calvert-Lewin" stays whole too.
+        if "-" in parts[-1]:
+            first_part = parts[-1].split("-")[0]
+            if len(first_part) >= 4:
+                aliases.add(first_part)
+            aliases.add(" ".join([*parts[:-1], first_part]))
     return sorted(aliases)
 
 
@@ -199,8 +210,17 @@ def build_gazetteer(players: pd.DataFrame, table: pd.DataFrame) -> dict:
     # Players who moved mid-season appear once per team; the verified club is where they played most recently,
     # approximated by most minutes.
     latest = players.sort_values("minutes").groupby("player").tail(1)
+    # A hand-written nickname beats an automatic surname: "Mbappe" means Kylian, not his brother Ethan
+    # (whose full name still matches).
+    present = set(latest["player"])
+    claimed = {fold_name(a) for name, aliases in PLAYER_ALIASES.items() if name in present for a in aliases}
+    entries = []
+    for _, r in latest.iterrows():
+        manual = {fold_name(a) for a in PLAYER_ALIASES.get(r["player"], [])}
+        aliases = [a for a in player_aliases(r["player"]) if fold_name(a) in manual or fold_name(a) not in claimed]
+        entries.append({"name": r["player"], "aliases": aliases, "team": r["team"], "league": r["league"]})
     return {
-        "players": [{"name": r["player"], "aliases": player_aliases(r["player"]), "team": r["team"], "league": r["league"]} for _, r in latest.iterrows()],
+        "players": entries,
         "teams": [{"name": t, "aliases": TEAM_ALIASES.get(t, []), "league": league_of.get(t, "")} for t in teams],
     }
 

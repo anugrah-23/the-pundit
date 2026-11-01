@@ -4,6 +4,27 @@ Aliases that are ambiguous on their own ("United", "City", "Real") are deliberat
 the entity guard would rather miss a team than match the wrong one.
 """
 
+# Nicknames and short forms for players, keyed by the name Understat uses. Surnames are added
+# automatically; this is only for names fans use that can't be derived. Entries for players not in
+# the season's data are ignored.
+PLAYER_ALIASES: dict[str, list[str]] = {
+    "Kylian Mbappe-Lottin": ["Mbappe", "Kylian Mbappe", "Kylian"],
+    "Vinícius Júnior": ["Vinicius", "Vini Jr", "Vini"],
+    "Khvicha Kvaratskhelia": ["Kvara", "Kvaradona"],
+    "Trent Alexander-Arnold": ["Trent", "TAA"],
+    "Lautaro Martínez": ["Lautaro", "Toro"],
+    "Lamine Yamal": ["Lamine"],
+    "Erling Haaland": ["Erling"],
+    "Bukayo Saka": ["Bukayo", "Saka"],
+    "Jude Bellingham": ["Jude"],
+    "Harry Kane": ["Harry Kane"],
+    "Mohamed Salah": ["Mo Salah", "Egyptian King"],
+    "Robert Lewandowski": ["Lewa"],
+    "Rafael Leão": ["Leao"],
+    "Ousmane Dembélé": ["Dembele"],
+    "Victor Osimhen": ["Osimhen"],
+}
+
 TEAM_ALIASES: dict[str, list[str]] = {
     # Premier League
     "Arsenal": ["gunners", "afc"],
