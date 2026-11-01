@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 3 * * 2" # Tuesdays 03:17 UTC, after the weekend and Monday games
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "backend/etl/**"
+      - ".github/workflows/etl.yml"
 
 permissions:
   contents: write
@@ -26,10 +31,16 @@ jobs:
         run: python -m etl.fetch_understat --season 2026 --out data/raw
       - name: Build corpus and embeddings
         run: python -m etl.build_corpus --raw data/raw --out data/corpus --data-version "$(date -u +%F)"
+      - name: Show what came back
+        run: |
+          head -3 data/raw/players.csv
+          head -3 data/raw/matches.csv
+          wc -l data/raw/*.csv data/corpus/docs.jsonl
       - name: Commit if changed
         run: |
           git config user.name "pundit-bot"
           git config user.email "pundit-bot@users.noreply.github.com"
           git add data/raw data/corpus
           git diff --cached --quiet || git commit -m "data: refresh $(date -u +%F)"
+          git pull --rebase
           git push
