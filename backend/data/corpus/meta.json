@@ -1,0 +1,6 @@
+{
+ "data_version": "2026-11-01",
+ "season": "2026-27",
+ "docs": 2863,
+ "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+}
