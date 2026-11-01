@@ -1,0 +1,48 @@
+name: Deploy backend to Hugging Face
+
+# Needs two settings on the GitHub repo (Settings > Secrets and variables > Actions):
+#   secret   HF_TOKEN   a Hugging Face access token with write permission
+#   variable HF_SPACE   the Space id, e.g. anugrah-23/the-pundit-api
+# API keys and the database URL live in the Space's own secrets, never here.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_run:
+    workflows: ["Refresh football data"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    if: ${{ vars.HF_SPACE != '' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install huggingface_hub
+      - name: Upload backend folder to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          python - <<'EOF'
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.create_repo(os.environ["HF_SPACE"], repo_type="space", space_sdk="docker", exist_ok=True)
+          api.upload_folder(
+              folder_path="backend",
+              repo_id=os.environ["HF_SPACE"],
+              repo_type="space",
+              ignore_patterns=["tests/*", "data/raw/*", "data/demo_corpus/*", "*.db", ".env", "__pycache__/*", "eval/data/*"],
+              commit_message=f"Deploy {os.environ.get('GITHUB_SHA', '')[:7]}",
+          )
+          EOF

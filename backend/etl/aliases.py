@@ -12,7 +12,7 @@ PLAYER_ALIASES: dict[str, list[str]] = {
     "Vinícius Júnior": ["Vinicius", "Vini Jr", "Vini"],
     "Khvicha Kvaratskhelia": ["Kvara", "Kvaradona"],
     "Trent Alexander-Arnold": ["Trent", "TAA"],
-    "Lautaro Martínez": ["Lautaro", "Toro"],
+    "Lautaro Martínez": ["Lautaro"],
     "Lamine Yamal": ["Lamine"],
     "Erling Haaland": ["Erling"],
     "Bukayo Saka": ["Bukayo", "Saka"],
